@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -14,12 +16,15 @@ import lombok.Setter;
 public class Constrains {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    private String message;
 
-    @OneToOne(mappedBy = "constrains",cascade = CascadeType.ALL)
-    private Problem problemId;
+    private List<String> constraintText;
+
+    @ManyToOne
+    @JoinColumn(name = "problem_id", referencedColumnName = "id")
+    private Problem problem;
+
 
 }

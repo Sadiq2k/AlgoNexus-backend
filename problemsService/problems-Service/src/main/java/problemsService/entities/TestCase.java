@@ -9,31 +9,27 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Example {
+public class TestCase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String explanation;
+    @ElementCollection
+    @Column(name = "input")
+    private List<String> input;
 
-//    @ElementCollection
-//    @Column(name = "input")
-//    private List<String> input;
-//
-//    @ElementCollection
-//    @Column(name = "output")
-//    private List<String> output;
+    @ElementCollection
+    @Column(name = "output")
+    private List<String> output;
 
     @ManyToOne
     @JoinColumn(name = "problem_id")
     private Problem problem;
-
-
 
 }

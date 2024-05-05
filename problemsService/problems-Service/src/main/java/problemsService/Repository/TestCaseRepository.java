@@ -2,9 +2,8 @@ package problemsService.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import problemsService.entities.Problem;
+import problemsService.entities.TestCase;
 
 @Repository
-public interface problemRepository extends JpaRepository<Problem,Long> {
-
+public interface TestCaseRepository extends JpaRepository<TestCase,Long> {
 }
