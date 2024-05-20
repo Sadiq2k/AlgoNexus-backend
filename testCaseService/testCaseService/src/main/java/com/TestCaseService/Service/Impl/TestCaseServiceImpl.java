@@ -5,6 +5,7 @@ import com.TestCaseService.Judge0.error.ClientSandboxCodeExecutionError;
 import com.TestCaseService.Judge0.error.SandboxCompileError;
 import com.TestCaseService.Judge0.error.SandboxError;
 import com.TestCaseService.Judge0.error.SandboxStandardError;
+import com.TestCaseService.Model.DTO.SubmissionDTO;
 import com.TestCaseService.Model.Entities.TestCaseEntity;
 import com.TestCaseService.Model.Enum.Submission;
 import com.TestCaseService.Model.Request.Judge0Request;
@@ -21,6 +22,7 @@ import com.TestCaseService.Model.Request.AddTestCaseRequest;
 import com.TestCaseService.Service.TestCaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -100,12 +102,15 @@ public class TestCaseServiceImpl implements TestCaseService {
         if (!exceptions.isEmpty()) {
             throw exceptions.peek();
         }
-
         return buildTestCaseRunResponse(solutionSubmitRequest, allTestCases.get(0).getTestCases().size(), acceptedCases, rejectedCases, timeTaken, memoryTaken);
     }
 
     private TestCaseRunResponse buildTestCaseRunResponse(SolutionSubmitRequest solutionSubmitRequest,
-                                                         int totalTestCases, Queue<AcceptCase> acceptedCases, Queue<RejectCase> rejectedCases, Queue<Double> timeTaken, Queue<Double> memoryTaken) {
+                                                         int totalTestCases,
+                                                         Queue<AcceptCase> acceptedCases,
+                                                         Queue<RejectCase> rejectedCases,
+                                                         Queue<Double> timeTaken,
+                                                         Queue<Double> memoryTaken) {
         TestCaseRunResponse response = new TestCaseRunResponse();
 
         double avgMemory = calculateAverage(memoryTaken);
@@ -119,56 +124,79 @@ public class TestCaseServiceImpl implements TestCaseService {
         response.setTotalTestCases(totalTestCases);
         response.setSourceCode(solutionSubmitRequest.getSolutionCode());
         response.setSubmissionTime(LocalDateTime.now());
+//        saveSubmissionProblem(response);
         return response;
     }
 
-    private double calculateAverage(Queue<Double> values) {
-        return values.stream().reduce(0D, Double::sum) / values.size();
-    }
-
+    private double calculateAverage(Queue<Double> values) {return values.stream().reduce(0D, Double::sum) / values.size();}
     private double convertToMB(double valueInKB) {
         return Math.round(valueInKB / 1024.0 * 100.0) / 100.0;
     }
-
     private double convertToSeconds(double valueInMS) {
         return Math.round(valueInMS * 1000.0 * 100.0) / 100.0;
     }
 
+//    private void saveSubmissionProblem(TestCaseRunResponse response ) {
+//        SubmissionDTO SUBMISSION_DTO = SubmissionDTO.builder()
+//                .averageMemory(response.getAverageMemory())
+//                .averageTime(response.getAverageTime())
+//                .submission(response.getSubmission())
+//                .rejectedCases(response.getRejectedCases())
+//                .acceptedCases(response.getAcceptedCases())
+//                .sourceCode(response.getSourceCode())
+//                .submissionTime(response.getSubmissionTime())
+//                .userId()
+//                .isSolved()
+//                .problemId()
+//                .build();
+//    }
 
 
-    private JudgeSubmitResponse executeAndGetResponse(SolutionSubmitRequest solutionSubmitRequest, TestCase test) {
+    private JudgeSubmitResponse executeAndGetResponse(SolutionSubmitRequest solutionSubmitRequest, TestCase testCase) {
+        Judge0Request request = createJudge0Request(solutionSubmitRequest, testCase);
+        JudgeTokenResponse submissionCreationResponse = createJudge0Submission(request); // Create submission and retrieve token
+        return pollForSubmissionResult(submissionCreationResponse.getToken());// Poll for submission result
+    }
+
+    private Judge0Request createJudge0Request(SolutionSubmitRequest solutionSubmitRequest, TestCase testCase) {
+        String combinedSourceCode = solutionSubmitRequest.getSolutionCode() + "\n" + solutionSubmitRequest.getDriverCode();
+
         Judge0Request request = new Judge0Request();
-        String srcCode = solutionSubmitRequest.getSolutionCode() + "\n" + solutionSubmitRequest.getDriverCode() ;
-        request.setSource_code(srcCode);
+        request.setSource_code(combinedSourceCode);
         request.setLanguage_id(solutionSubmitRequest.getLanguageId());
-        request.setStdin(Base64.getEncoder().encodeToString(test.getTestCaseInput().getBytes()));
+        request.setStdin(Base64.getEncoder().encodeToString(testCase.getTestCaseInput().getBytes()));
+        return request;
+    }
 
-        JudgeTokenResponse submissionCreationResponse = createJudge0Submission(request);
+    private JudgeSubmitResponse pollForSubmissionResult(String token) {
         JudgeSubmitResponse submissionResponse;
 
         do {
             try {
                 submissionResponse = judgeWebClient.get()
-                        .uri("/submissions/" + submissionCreationResponse.getToken())
+                        .uri("/submissions/" + token)
                         .retrieve()
                         .bodyToMono(JudgeSubmitResponse.class)
                         .block();
             } catch (HttpClientErrorException e) {
-                System.out.println("CLIENT ERROR : {}"+ e.getMessage());
                 throw new ClientSandboxCodeExecutionError(e, e.getMessage());
             } catch (Exception e) {
-                System.out.println("ERROR : {}"+ e.getMessage());
                 throw new SandboxError(e, e.getMessage());
             }
-            try {
-                TimeUnit.SECONDS.sleep(2);
-            } catch (InterruptedException e) {
-                System.out.println("Thread interrupted while sleeping: {}"+ e.getMessage());
-                throw new InternalServerException("Something went wrong while executing the program", e);
-            }
+            sleepForSeconds(2);// Wait before polling again
+
         } while (Objects.requireNonNull(submissionResponse).getStatus().getId() < 3);
         return submissionResponse;
     }
+
+    private void sleepForSeconds(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            throw new InternalServerException("Something went wrong while executing the program", e);
+        }
+    }
+
 
     private void handleSubmissionResponse(JudgeSubmitResponse judgeSubmitResponse,
                                           TestCase test,
@@ -176,21 +204,14 @@ public class TestCaseServiceImpl implements TestCaseService {
                                           Queue<RejectCase> rejectedCases,
                                           Queue<Double> timeTaken, Queue<Double> memoryTaken) {
         if (judgeSubmitResponse.getCompile_output() != null) {
-            System.out.println("submit the code error occur compile output: {}"+ judgeSubmitResponse.getCompile_output());
             throw new SandboxCompileError(judgeSubmitResponse.getCompile_output());
-
         } else if (judgeSubmitResponse.getStderr() != null) {
-            System.out.println("submit the code error occur: {}"+ judgeSubmitResponse.getStderr());
             throw new SandboxStandardError(judgeSubmitResponse.getStderr());
-
         } else if (judgeSubmitResponse.getStdout() != null) {
             String output = judgeSubmitResponse.getStdout().replace("\n", "");
             if (test.getExpectedOutput().equals(output)) {
-                System.out.println("Test case Accepted.");
                 acceptedCases.add(new AcceptCase(test.getTestCaseInput(), test.getExpectedOutput()));
-
             } else {
-                System.out.println("Test case Rejected.");
                 rejectedCases.add(new RejectCase(test.getTestCaseInput(), output, test.getExpectedOutput()));
             }
             timeTaken.add(Double.parseDouble(judgeSubmitResponse.getTime()));
@@ -200,7 +221,6 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private JudgeTokenResponse createJudge0Submission(Judge0Request judge0Request) {
         try {
-            System.out.println("request object : {}" + judge0Request);
             return judgeWebClient.post()
                     .uri(uriBuilder -> uriBuilder
                             .path("/submissions")
@@ -211,10 +231,8 @@ public class TestCaseServiceImpl implements TestCaseService {
                     .bodyToMono(JudgeTokenResponse.class)
                     .block();
         } catch (HttpClientErrorException e) {
-            System.out.println("HTTP CLIENT ERROR : {}"+ e.getMessage());
             throw new ClientSandboxCodeExecutionError(e, e.getMessage());
         } catch (Exception e) {
-            System.out.println("HTTP REQUEST EXCEPTION : {}"+ e.getMessage());
             throw new SandboxError(e, e.getMessage());
         }
     }
