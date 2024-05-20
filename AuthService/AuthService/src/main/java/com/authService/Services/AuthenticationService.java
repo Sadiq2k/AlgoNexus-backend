@@ -1,9 +1,10 @@
 package com.authService.Services;
 
-import com.authService.Entities.User;
-import com.authService.Request.AuthenticationRequest;
-import com.authService.Request.RegistrationRequest;
-import com.authService.Response.AuthenticationResponse;
+
+import com.authService.Model.Entities.User;
+import com.authService.Model.Request.AuthenticationRequest;
+import com.authService.Model.Request.RegistrationRequest;
+import com.authService.Model.Response.AuthenticationResponse;
 import jakarta.mail.MessagingException;
 
 import java.util.UUID;

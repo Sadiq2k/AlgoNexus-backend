@@ -1,10 +1,11 @@
 package problemsService.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import problemsService.entities.Problem;
+import problemsService.Model.entities.Problem;
 
 @Repository
-public interface ProblemRepository extends JpaRepository<Problem,Long> {
+public interface ProblemRepository extends MongoRepository<Problem,String> {
 
+    boolean existsByTitleIgnoreCase(String title);
 }

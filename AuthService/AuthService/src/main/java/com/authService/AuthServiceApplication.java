@@ -1,6 +1,6 @@
 package com.authService;
 
-import com.authService.Entities.Role;
+import com.authService.Model.Entities.Role;
 import com.authService.Repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,13 +23,13 @@ public class AuthServiceApplication {
     }
 
     @Bean
-    public CommandLineRunner runner(RoleRepository roleRepository){
-        return args -> {
-            if (roleRepository.findByName("USER").isEmpty()){
-                roleRepository.save(
-                        Role.builder().name("USER").build()
-                );
-            }
-        };
+        public CommandLineRunner runner(RoleRepository roleRepository){
+            return args -> {
+                if (roleRepository.findByName("USER").isEmpty()){
+                    roleRepository.save(
+                            Role.builder().name("USER").build()
+                    );
+                }
+            };
     }
 }

@@ -1,0 +1,17 @@
+server:
+  port: 8089
+
+spring:
+  config:
+    import: optional:configserver:http://localhost:8085
+  application:
+    name: TESTCASE-SERVICE
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: algo-nexus-testCaseService
+      auto-index-creation: true
+      auto-create-indexes: true
+
+judge0:
+  base_url: "http://34.93.145.38:2358"

@@ -1,10 +1,10 @@
 package com.algo.nexus.userService.Serivce.Impl;
 
-import com.algo.nexus.userService.Entities.User;
+import com.algo.nexus.userService.Model.Request.*;
+import com.algo.nexus.userService.Model.Entities.User;
 import com.algo.nexus.userService.Repository.UserRepository;
-import com.algo.nexus.userService.Request.*;
-import com.algo.nexus.userService.Response.UpdateFullNameResponse;
-import com.algo.nexus.userService.Response.UpdateUserResponse;
+import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
+import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
 import com.algo.nexus.userService.Serivce.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;

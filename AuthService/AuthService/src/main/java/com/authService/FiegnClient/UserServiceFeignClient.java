@@ -1,6 +1,6 @@
 package com.authService.FiegnClient;
 
-import com.authService.Dto.UserDto;
+import com.authService.Model.Dto.UserDto;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;

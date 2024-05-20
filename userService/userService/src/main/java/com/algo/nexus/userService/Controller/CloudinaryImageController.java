@@ -1,7 +1,7 @@
 package com.algo.nexus.userService.Controller;
 
-import com.algo.nexus.userService.Entities.User;
-import com.algo.nexus.userService.Entities.UserProfileImage;
+import com.algo.nexus.userService.Model.Entities.User;
+import com.algo.nexus.userService.Model.Entities.UserProfileImage;
 import com.algo.nexus.userService.Repository.UserRepository;
 import com.algo.nexus.userService.Serivce.CloudinaryImageService;
 import com.algo.nexus.userService.Serivce.UserProfileImageService;
@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/cloudinary")
 public class CloudinaryImageController {
@@ -26,22 +26,26 @@ public class CloudinaryImageController {
     @Autowired
     private  UserRepository userRepository;
 
-    @PostMapping()
-    public ResponseEntity<Map> uploadImage(@RequestParam("image") MultipartFile file , @RequestParam("userId") UUID userId){
-        Map cloudinaryData = this.cloudinaryImageService.upload(file);
+    @PostMapping
+    public ResponseEntity<Map> uploadImage(@RequestParam("image") MultipartFile file , @RequestParam("userId") UUID userId) throws IOException {
 
         User user = userRepository.findById(userId);
         if (user != null) {
             UserProfileImage existingProfileImage = userProfileImageService.findByUser(user);
             if (existingProfileImage != null) {
                 // Delete existing image from Cloudinary
+                System.out.println(existingProfileImage.getId());
+
+                cloudinaryImageService.delete(existingProfileImage.getImageId());
                 userProfileImageService.delete(existingProfileImage.getId());
             }
+            Map cloudinaryData = this.cloudinaryImageService.upload(file);
 
         UserProfileImage userProfileImage = new UserProfileImage();
+//        userProfileImage.setId(UUID.randomUUID());
         userProfileImage.setName(file.getOriginalFilename()); // Set image name
         userProfileImage.setImageUrl(cloudinaryData.get("url").toString()); // Set image URL from Cloudinary
-            userProfileImage.setImageId(cloudinaryData.get("public_id").toString()); // Set image ID from Cloudinary
+        userProfileImage.setImageId(cloudinaryData.get("public_id").toString()); // Set image ID from Cloudinary
         userProfileImage.setUser(user);
 
         userProfileImageService.saveUserProfileImage(userProfileImage);

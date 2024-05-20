@@ -10,5 +10,6 @@ public interface CloudinaryImageService {
    public Map upload(MultipartFile file);
 
 
+    void delete(String imageId) throws IOException;
 
 }

@@ -1,6 +1,5 @@
 package com.authService.Services;
-
-import com.authService.Entities.User;
+import com.authService.Model.Entities.User;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -1,13 +1,12 @@
 package com.authService.Controller;
 
-import com.authService.Request.*;
-import com.authService.Response.AuthenticationResponse;
-import com.authService.Response.ForgotPasswordResponse;
-import com.authService.Response.UpdatePasswordResponse;
-import com.authService.Services.AuthenticationService;
-import com.authService.Services.ForgotPasswordService;
-import com.authService.Services.Impl.AuthenticationServiceImpl;
-import com.authService.Services.Impl.ForgotPasswordServiceImpl;
+
+import com.authService.Model.Request.*;
+import com.authService.Model.Response.AuthenticationResponse;
+import com.authService.Model.Response.ForgotPasswordResponse;
+import com.authService.Model.Response.UpdatePasswordResponse;
+import com.authService.Services.*;
+import com.authService.Services.Impl.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

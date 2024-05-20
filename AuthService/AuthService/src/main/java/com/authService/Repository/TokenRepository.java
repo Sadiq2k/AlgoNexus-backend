@@ -1,7 +1,5 @@
 package com.authService.Repository;
-
-import com.authService.Entities.Role;
-import com.authService.Entities.Token;
+import com.authService.Model.Entities.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,9 @@
 package com.algo.nexus.userService.Serivce;
 
-import com.algo.nexus.userService.Entities.User;
-import com.algo.nexus.userService.Request.*;
-import com.algo.nexus.userService.Response.UpdateFullNameResponse;
-import com.algo.nexus.userService.Response.UpdateUserResponse;
+import com.algo.nexus.userService.Model.Request.*;
+import com.algo.nexus.userService.Model.Entities.User;
+import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
+import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

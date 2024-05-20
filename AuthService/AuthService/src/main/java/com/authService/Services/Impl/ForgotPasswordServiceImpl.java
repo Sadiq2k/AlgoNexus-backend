@@ -1,12 +1,13 @@
 package com.authService.Services.Impl;
 
-import com.authService.Entities.User;
+
 import com.authService.FiegnClient.UserServiceFeignClient;
 import com.authService.JwtSecurtiy.JwtService;
-import com.authService.Request.ForgotPasswordRequest;
-import com.authService.Request.UpdatePasswordRequest;
-import com.authService.Response.ForgotPasswordResponse;
-import com.authService.Response.UpdatePasswordResponse;
+import com.authService.Model.Entities.User;
+import com.authService.Model.Request.ForgotPasswordRequest;
+import com.authService.Model.Request.UpdatePasswordRequest;
+import com.authService.Model.Response.ForgotPasswordResponse;
+import com.authService.Model.Response.UpdatePasswordResponse;
 import com.authService.Services.AuthenticationService;
 import com.authService.Services.ForgotPasswordService;
 import com.authService.Services.UserService;
@@ -23,8 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.SimpleTimeZone;
 import java.util.UUID;
 
 @Service

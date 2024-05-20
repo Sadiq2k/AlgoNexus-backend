@@ -1,13 +1,13 @@
 package com.algo.nexus.userService.Exceptions;
 
-import com.algo.nexus.userService.Payload.ApiResponse;
+import com.algo.nexus.userService.Model.Payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {// this project any where throw exception this class will handle any exception
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex){

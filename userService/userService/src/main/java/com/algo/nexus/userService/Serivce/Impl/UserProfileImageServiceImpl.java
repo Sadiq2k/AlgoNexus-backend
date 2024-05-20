@@ -1,7 +1,7 @@
 package com.algo.nexus.userService.Serivce.Impl;
 
-import com.algo.nexus.userService.Entities.User;
-import com.algo.nexus.userService.Entities.UserProfileImage;
+import com.algo.nexus.userService.Model.Entities.User;
+import com.algo.nexus.userService.Model.Entities.UserProfileImage;
 import com.algo.nexus.userService.Repository.UserProfileImageRepository;
 import com.algo.nexus.userService.Serivce.UserProfileImageService;
 import org.springframework.beans.factory.annotation.Autowired;

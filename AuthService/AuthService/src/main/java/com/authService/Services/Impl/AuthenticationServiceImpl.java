@@ -1,23 +1,15 @@
 package com.authService.Services.Impl;
 
-
-
-import com.authService.Dto.UserDto;
-import com.authService.Entities.Role;
-
 import com.authService.FiegnClient.UserServiceFeignClient;
-import com.authService.Request.AuthenticationRequest;
-import com.authService.Request.RegistrationRequest;
-import com.authService.Response.AuthenticationResponse;
+import com.authService.Model.Dto.UserDto;
+import com.authService.Model.Entities.*;
+import com.authService.Model.Request.*;
+import com.authService.Model.Response.*;
 import com.authService.Services.AuthenticationService;
 import com.authService.email.EmailService;
 import com.authService.email.EmailTemplateName;
-import com.authService.Repository.RoleRepository;
 import com.authService.JwtSecurtiy.JwtService;
-import com.authService.Entities.Token;
-import com.authService.Repository.TokenRepository;
-import com.authService.Entities.User;
-import com.authService.Repository.UserRepository;
+import com.authService.Repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.algo.nexus.userService.Repository;
 
-import com.algo.nexus.userService.Entities.User;
+import com.algo.nexus.userService.Model.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

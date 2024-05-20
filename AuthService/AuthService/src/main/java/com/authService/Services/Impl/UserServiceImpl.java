@@ -1,6 +1,6 @@
 package com.authService.Services.Impl;
 
-import com.authService.Entities.User;
+import com.authService.Model.Entities.User;
 import com.authService.Repository.UserRepository;
 import com.authService.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

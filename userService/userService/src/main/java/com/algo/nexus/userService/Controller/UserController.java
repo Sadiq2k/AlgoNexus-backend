@@ -1,20 +1,16 @@
 package com.algo.nexus.userService.Controller;
 
-import com.algo.nexus.userService.Entities.User;
+import com.algo.nexus.userService.Model.Request.*;
+import com.algo.nexus.userService.Model.Entities.User;
 import com.algo.nexus.userService.FiegnClient.AuthenticationFeignClient;
-import com.algo.nexus.userService.Request.*;
-import com.algo.nexus.userService.Response.UpdateFullNameResponse;
-import com.algo.nexus.userService.Response.UpdateUserResponse;
-import com.algo.nexus.userService.Response.UserResponse;
+import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
+import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
+import com.algo.nexus.userService.Model.Response.UserResponse;
 import com.algo.nexus.userService.Serivce.UserService;
-import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,11 +52,6 @@ public class UserController {
         return ResponseEntity.ok(userResponses);
     }
 
-//    @GetMapping("/{username}")
-//    public ResponseEntity<User> getUser(@PathVariable String username){
-//       User user= userService.getUser(username);
-//       return ResponseEntity.ok(user);
-//    }
     @PostMapping("/update")
     public ResponseEntity<String> updateUser(@RequestBody UpdateUserResponse updateUserResponse){
              ResponseEntity<String> response = userService.updateUser(updateUserResponse);

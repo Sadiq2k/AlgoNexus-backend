@@ -1,11 +1,9 @@
 package com.algo.nexus.userService.Serivce.Impl;
 
-import com.algo.nexus.userService.Entities.UserProfileImage;
 import com.algo.nexus.userService.Repository.UserProfileImageRepository;
 import com.algo.nexus.userService.Serivce.CloudinaryImageService;
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +29,23 @@ public class CloudinaryImageServiceImpl implements CloudinaryImageService {
 
 
     }
+
+    @Override
+    public void delete(String imageId) throws IOException {
+
+            Map result = cloudinary.uploader().destroy(imageId, Map.of());
+            // Check the result to ensure successful deletion if required
+            // For example:
+             if ("ok".equals(result.get("result"))) {
+                // Deletion successful
+                 System.out.println("Deletion successful");
+             } else {
+                // Handle deletion failure
+                 System.out.println("Deletion failure");
+             }
+
+    }
+
 
 
 }

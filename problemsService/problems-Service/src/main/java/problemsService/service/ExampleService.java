@@ -1,6 +1,6 @@
 package problemsService.service;
 
-import problemsService.entities.Example;
+import problemsService.Model.Dto.Example;
 
 public interface ExampleService {
     void addExample(Example example);

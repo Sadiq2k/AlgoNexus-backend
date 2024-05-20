@@ -1,7 +1,7 @@
 package com.algo.nexus.userService.Serivce;
 
-import com.algo.nexus.userService.Entities.User;
-import com.algo.nexus.userService.Entities.UserProfileImage;
+import com.algo.nexus.userService.Model.Entities.User;
+import com.algo.nexus.userService.Model.Entities.UserProfileImage;
 
 import java.util.UUID;
 

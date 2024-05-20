@@ -3,8 +3,10 @@ package problemsService.service.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import problemsService.Repository.TestCaseRepository;
-import problemsService.entities.TestCase;
+import problemsService.Model.Dto.TestCase;
 import problemsService.service.TestCaseService;
+
+import java.util.List;
 
 @Service
 public class TestCaseServiceImpl implements TestCaseService {
@@ -15,4 +17,12 @@ public class TestCaseServiceImpl implements TestCaseService {
     public void addTestCase(TestCase testCase) {
         testCaseRepository.save(testCase);
     }
+
+    @Override
+    public void saveAll(List<TestCase> testCases) {
+        testCaseRepository.saveAll(testCases);
+    }
+
+
 }
+
