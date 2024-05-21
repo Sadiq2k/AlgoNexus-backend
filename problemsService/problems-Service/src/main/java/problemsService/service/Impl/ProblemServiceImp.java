@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import problemsService.Exception.DuplicateValueException;
 import problemsService.Exception.InternalServerException;
+import problemsService.FiengClient.SubmissionFeignClient;
 import problemsService.FiengClient.TestCaseFeignClient;
 import problemsService.Model.Dto.AcceptCase;
 import problemsService.Model.Dto.RejectCase;
+import problemsService.Model.Dto.SubmissionDTO;
 import problemsService.Model.Dto.TestCase;
 import problemsService.Model.Enum.Submission;
 import problemsService.Model.Judge0.error.SandboxCodeExecutionError;
@@ -39,6 +41,8 @@ public class ProblemServiceImp implements ProblemService {
     private ProblemRepository problemRepository;
     @Autowired
     private TestCaseFeignClient testCaseFeignClient;
+    @Autowired
+    private SubmissionFeignClient submissionFeignClient;
 
     @Autowired
     private  WebClient judgeWebClient;
@@ -51,7 +55,22 @@ public class ProblemServiceImp implements ProblemService {
 
     @Override
     public Optional<Problem> getProblemById(String problemId) {
-       return problemRepository.findById(problemId);
+
+        Optional<Problem> problemOptional = problemRepository.findById(problemId);
+
+        if (problemOptional.isPresent()) {
+            Problem problem = problemOptional.get();
+            try {
+                List<SubmissionDTO> submissionSolution = submissionFeignClient.getSubmissionSolution(problemId);
+                if (submissionSolution != null) {
+                    problem.setSubmissionDTO(submissionSolution);
+                }
+            } catch (Exception e) {
+                log.info("Error fetching submission solution: " + e.getMessage());
+            }
+            return Optional.of(problem);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -186,7 +205,8 @@ public class ProblemServiceImp implements ProblemService {
                                           TestCase test,
                                           Queue<AcceptCase> acceptedCases,
                                           Queue<RejectCase> rejectedCases,
-                                          Queue<Double> timeTaken, Queue<Double> memoryTaken) {
+                                          Queue<Double> timeTaken,
+                                          Queue<Double> memoryTaken) {
         if (judgeSubmitResponse.getStatus().getId() ==13){
           throw new SandboxError(judgeSubmitResponse.getStatus().getDescription() +":"+judgeSubmitResponse.getMessage());
         }

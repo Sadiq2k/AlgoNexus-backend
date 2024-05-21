@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import problemsService.Model.Dto.Example;
+import problemsService.Model.Dto.SubmissionDTO;
 import problemsService.Model.Dto.TestCase;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class Problem {
     private String category;
     private List<Example> examples;
     private List<TestCase> testCases;
+    private List<SubmissionDTO> submissionDTO;
 }
 
 

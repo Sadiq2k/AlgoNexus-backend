@@ -7,6 +7,7 @@ import com.TestCaseService.Model.Request.AddTestCaseRequest;
 import com.TestCaseService.Service.TestCaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/test-case")
 @Slf4j
+@EnableFeignClients
 public class TestCaseController {
 
+    @Autowired
     private final TestCaseService testCaseService;
 
     @Autowired

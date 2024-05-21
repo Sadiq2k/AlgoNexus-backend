@@ -1,6 +1,7 @@
 package com.TestCaseService.Service.Impl;
 
 import com.TestCaseService.Exceptions.InternalServerException;
+import com.TestCaseService.FiegnClientCommunication.SubmissionServiceFeignClient;
 import com.TestCaseService.Judge0.error.ClientSandboxCodeExecutionError;
 import com.TestCaseService.Judge0.error.SandboxCompileError;
 import com.TestCaseService.Judge0.error.SandboxError;
@@ -22,7 +23,6 @@ import com.TestCaseService.Model.Request.AddTestCaseRequest;
 import com.TestCaseService.Service.TestCaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -41,6 +41,9 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     @Autowired
     private  WebClient judgeWebClient;
+
+    @Autowired
+    private SubmissionServiceFeignClient submissionServiceFeignClient;
 
 
     @Override
@@ -105,7 +108,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         return buildTestCaseRunResponse(solutionSubmitRequest, allTestCases.get(0).getTestCases().size(), acceptedCases, rejectedCases, timeTaken, memoryTaken);
     }
 
-    private TestCaseRunResponse buildTestCaseRunResponse(SolutionSubmitRequest solutionSubmitRequest,
+    private TestCaseRunResponse buildTestCaseRunResponse(SolutionSubmitRequest request,
                                                          int totalTestCases,
                                                          Queue<AcceptCase> acceptedCases,
                                                          Queue<RejectCase> rejectedCases,
@@ -122,13 +125,14 @@ public class TestCaseServiceImpl implements TestCaseService {
         response.setRejectedCases(new ArrayList<>(rejectedCases));
         response.setAcceptedCases(new ArrayList<>(acceptedCases));
         response.setTotalTestCases(totalTestCases);
-        response.setSourceCode(solutionSubmitRequest.getSolutionCode());
+        response.setSourceCode(request.getSolutionCode());
         response.setSubmissionTime(LocalDateTime.now());
-//        saveSubmissionProblem(response);
+        saveSubmissionProblem(response, request.getUserId(), request.getProblemId());
         return response;
     }
 
-    private double calculateAverage(Queue<Double> values) {return values.stream().reduce(0D, Double::sum) / values.size();}
+    private double calculateAverage(Queue<Double> values) {
+        return values.stream().reduce(0D, Double::sum) / values.size();}
     private double convertToMB(double valueInKB) {
         return Math.round(valueInKB / 1024.0 * 100.0) / 100.0;
     }
@@ -136,21 +140,21 @@ public class TestCaseServiceImpl implements TestCaseService {
         return Math.round(valueInMS * 1000.0 * 100.0) / 100.0;
     }
 
-//    private void saveSubmissionProblem(TestCaseRunResponse response ) {
-//        SubmissionDTO SUBMISSION_DTO = SubmissionDTO.builder()
-//                .averageMemory(response.getAverageMemory())
-//                .averageTime(response.getAverageTime())
-//                .submission(response.getSubmission())
-//                .rejectedCases(response.getRejectedCases())
-//                .acceptedCases(response.getAcceptedCases())
-//                .sourceCode(response.getSourceCode())
-//                .submissionTime(response.getSubmissionTime())
-//                .userId()
-//                .isSolved()
-//                .problemId()
-//                .build();
-//    }
-
+    private void saveSubmissionProblem(TestCaseRunResponse response, String userId, String problemId) {
+        SubmissionDTO SUBMISSION_DTO = SubmissionDTO.builder()
+                .averageMemory(response.getAverageMemory())
+                .averageTime(response.getAverageTime())
+                .submission(response.getSubmission())
+                .rejectedCases(response.getRejectedCases())
+                .acceptedCases(response.getAcceptedCases())
+                .sourceCode(response.getSourceCode())
+                .submissionTime(response.getSubmissionTime())
+                .userId(userId)
+                .isSolved(response.getSubmission().equals(Submission.ACCEPTED))
+                .problemId(problemId)
+                .build();
+        submissionServiceFeignClient.addSubmissionProblem(SUBMISSION_DTO);
+    }
 
     private JudgeSubmitResponse executeAndGetResponse(SolutionSubmitRequest solutionSubmitRequest, TestCase testCase) {
         Judge0Request request = createJudge0Request(solutionSubmitRequest, testCase);
@@ -221,6 +225,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private JudgeTokenResponse createJudge0Submission(Judge0Request judge0Request) {
         try {
+            System.out.println(judge0Request);
             return judgeWebClient.post()
                     .uri(uriBuilder -> uriBuilder
                             .path("/submissions")

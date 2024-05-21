@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 public class SolutionSubmitRequest {
 
     private String problemId;
+    private String userId;
 
     private Integer languageId;
     private String language;

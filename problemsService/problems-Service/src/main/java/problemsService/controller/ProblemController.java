@@ -1,5 +1,6 @@
 package problemsService.controller;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -72,10 +73,22 @@ public class ProblemController {
 
 
     @GetMapping("/{problemId}")
+    @RateLimiter(name = "userRateLimiter", fallbackMethod = "ratingHotelFallBack" )
     public ResponseEntity<Problem> getProblem(@PathVariable("problemId") String problemId){
         Optional<Problem> optionalProblem = problemService.getProblemById(problemId);
         return optionalProblem.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<Problem> ratingHotelFallBack(String problemId, Exception ex) {
+        log.info("Fallback is executed because service is down", ex);
+        Problem problem = new Problem();
+        // Populate the problem object with default or cached data, if available
+        problem.setProblemId(problemId);
+        problem.setTitle("Default Title");
+        problem.setDescription("Default Description");
+
+        return new ResponseEntity<>(problem, HttpStatus.OK);
     }
 
     @PostMapping("/verify-problem")

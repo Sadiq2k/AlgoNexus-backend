@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "PROBLEM-SUBMISSION-SERVICE")
 public interface SubmissionServiceFeignClient {
 
-    @PostMapping("submission-add")
+    @PostMapping("/submit-solution/add")
     ResponseEntity<String> addSubmissionProblem(@RequestBody SubmissionDTO submissionDTO);
 
 
