@@ -71,36 +71,6 @@ public class CloudinaryImageController {
         }
     }
 
-//    @PutMapping("/{userId}")
-//    public ResponseEntity<Map> updateImage(@RequestParam("image") MultipartFile file, @PathVariable UUID userId) {
-//        Map cloudinaryData = this.cloudinaryImageService.upload(file);
-//        System.out.println("Received userId: " + userId);
-//
-//        // Log the received image file details
-//        System.out.println("Received image file: " + file.getOriginalFilename());
-//
-//        User user = userRepository.findById(userId);
-//        if (user != null) {
-//            UserProfileImage existingProfileImage = userProfileImageService.findByUser(user);
-//            if (existingProfileImage != null) {
-//                // Delete existing image from Cloudinary
-//                cloudinaryImageService.delete(existingProfileImage.getId());
-//
-//                // Update user profile image
-//                existingProfileImage.setName(file.getOriginalFilename());
-//                existingProfileImage.setImageUrl(cloudinaryData.get("url").toString());
-//                existingProfileImage.setImageId(cloudinaryData.get("public_id").toString());
-//                userProfileImageService.saveUserProfileImage(existingProfileImage);
-//
-//                return new ResponseEntity<>(cloudinaryData, HttpStatus.OK);
-//            } else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                        .body(Collections.singletonMap("error", "User profile image not found"));
-//            }
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found"));
-//        }
-//    }
 
 
 }

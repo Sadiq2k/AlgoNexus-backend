@@ -24,10 +24,7 @@ public class UserProfileImage {
     private String imageUrl;
     private String imageId;
 
-//    @JsonBackReference
-//    @OneToOne
-//    @JoinColumn(name = "user_id", nullable = true)
-//    private User user;
+
 @ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "user_id", nullable = false)
 private User user;

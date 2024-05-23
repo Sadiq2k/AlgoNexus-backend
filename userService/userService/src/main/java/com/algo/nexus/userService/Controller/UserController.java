@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
     private AuthenticationFeignClient authenticationFeignClient;
     @PostMapping("/register")
