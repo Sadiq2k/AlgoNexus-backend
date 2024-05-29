@@ -3,6 +3,9 @@ package problemsService.service.Impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +23,12 @@ import problemsService.Model.Judge0.error.SandboxCodeExecutionError;
 import problemsService.Model.Judge0.error.SandboxCompileError;
 import problemsService.Model.Judge0.error.SandboxError;
 import problemsService.Model.Judge0.error.SandboxStandardError;
+import problemsService.Model.entities.Difficulties;
 import problemsService.Model.request.*;
 import problemsService.Model.response.Judge0TokenResponse;
 import problemsService.Model.response.JudgeSubmitResponse;
 import problemsService.Model.response.ProblemVerificationResponse;
+import problemsService.Repository.DifficultyRepository;
 import problemsService.Repository.ProblemRepository;
 import problemsService.Model.entities.Problem;
 import problemsService.service.ProblemService;
@@ -43,14 +48,25 @@ public class ProblemServiceImp implements ProblemService {
     private TestCaseFeignClient testCaseFeignClient;
     @Autowired
     private SubmissionFeignClient submissionFeignClient;
+    @Autowired
+    private MongoOperations mongoOperations;
 
     @Autowired
     private  WebClient judgeWebClient;
+    
+    @Autowired
+    private DifficultyRepository difficultyRepository;
 
 
     @Override
-    public List<Problem> getAllProblems() {
-       return problemRepository.findAll();
+    public Page<Problem> getAllProblems(Integer page, Integer size) {
+
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Problem> allProblem = problemRepository.findAll(pageable);
+        List<Problem> allTopics = allProblem.getContent();
+        Page<Problem> responsePage = new PageImpl<>(allTopics, pageable, allProblem.getTotalElements());
+        return responsePage;
+
     }
 
     @Override
@@ -76,19 +92,18 @@ public class ProblemServiceImp implements ProblemService {
     @Override
     @Transactional
     public void addProblem(AddProblemRequest addProblemRequest, HttpServletRequest request) {
-        if (problemRepository.existsByTitleIgnoreCase(addProblemRequest.getTitle())) {
-            throw new DuplicateValueException("There's already an existing issue with that title");
-        }
+        Long generatedProblemNo = generateProblemNo();
 
         Problem problem = Problem.builder()
                 .title(addProblemRequest.getTitle())
+                .problemNo(generatedProblemNo)
                 .category(addProblemRequest.getCategory())
                 .driverCode(addProblemRequest.getDriverCode())
                 .solutionTemplate(addProblemRequest.getSolutionTemplate())
                 .languageId(addProblemRequest.getLanguageId())
                 .createdAt(LocalDateTime.now())
                 .examples(addProblemRequest.getExamples())
-                .difficulty(addProblemRequest.getDifficulty())
+                .difficulty(getDifficulty(addProblemRequest.getDifficulty()))
                 .description(addProblemRequest.getDescription())
                 .constraints(addProblemRequest.getConstraints())
                 .acceptanceRate(0F)
@@ -97,6 +112,25 @@ public class ProblemServiceImp implements ProblemService {
         AddTestCaseRequest addTestCaseRequest = new AddTestCaseRequest(problem.getProblemId() ,addProblemRequest.getTestCases());
         String authorizationHeader = request.getHeader("Authorization");
         testCaseFeignClient.addTestCases(addTestCaseRequest,authorizationHeader);
+    }
+
+    private String getDifficulty(String id) {
+        Optional<Difficulties> optionalDifficulty = difficultyRepository.findById(id);
+
+        if (optionalDifficulty.isPresent()) {
+            Difficulties difficulty = optionalDifficulty.get();
+            difficulty.setTotalCount(difficulty.getTotalCount() + 1);
+            difficultyRepository.save(difficulty);
+            return difficulty.getName();
+        }
+        return null;
+    }
+
+
+    private Long generateProblemNo() {
+        Query query = new Query().with(Sort.by(Sort.Direction.DESC, "problemNo")).limit(1);
+        Problem lastProblem = mongoOperations.findOne(query, Problem.class);
+        return lastProblem != null ? (lastProblem.getProblemNo() != null ? lastProblem.getProblemNo() + 1 : 1L) : 1L;
     }
 
     @Override
@@ -166,6 +200,13 @@ public class ProblemServiceImp implements ProblemService {
         List<TestCase> testCases = request.getTestCases();
         return testCases == null || testCases.isEmpty() || testCases.stream()
                 .anyMatch(tc -> tc.getTestCaseInput().isEmpty() || tc.getExpectedOutput().isEmpty());
+    }
+
+    @Override
+    public void checkDuplicateTitleExistsOrNot(String title) {
+        if (problemRepository.existsByTitleIgnoreCase(title)) {
+            throw new DuplicateValueException("There's already an existing issue with that title");
+        }
     }
 
 

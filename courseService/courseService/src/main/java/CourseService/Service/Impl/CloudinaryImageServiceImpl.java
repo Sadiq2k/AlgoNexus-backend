@@ -1,15 +1,13 @@
 package CourseService.Service.Impl;
 
-import CourseService.Model.Response.AddCourseResponse;
 import CourseService.Service.CloudinaryImageService;
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -39,6 +37,29 @@ public class CloudinaryImageServiceImpl implements CloudinaryImageService {
             System.out.println("Deletion failure");
         }
     }
+
+    public Map uploadVideo(MultipartFile file) {
+        try {
+            // Add resource_type as 'video' to ensure it's treated as a video
+            return cloudinary.uploader().upload(file.getBytes(),
+                    ObjectUtils.asMap("resource_type", "video"));
+        } catch (IOException e) {
+            throw new RuntimeException("Video uploading failed!", e);
+        }
+    }
+
+    public void deleteVideo(String videoId) {
+        try {
+            // Delete the video from Cloudinary
+            cloudinary.uploader().destroy(videoId, ObjectUtils.emptyMap());
+            System.out.println("Deletion successful");
+        } catch (IOException e) {
+            // Handle IOException
+            throw new RuntimeException("Failed to delete video from Cloudinary", e);
+        }
+    }
+
+
 
 
 }

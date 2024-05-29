@@ -34,13 +34,9 @@ public class User {
     private String education;
     private String location;
 
-
-//    @JsonManagedReference
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private UserProfileImage profileImage;
-@JsonManagedReference
-@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-private List<UserProfileImage> profileImages = new ArrayList<>();
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserProfileImage> profileImages = new ArrayList<>();
 
 
 }

@@ -16,10 +16,13 @@ import java.util.List;
 public class SubmissionDTO {
 
     private String userId;
+    private Long problemNo;
+    private String title;
     private String problemId;
     private Submission submission;
     private Double averageTime;
     private Double averageMemory;
+    private String difficulty;
     private List<RejectCase> rejectedCases;
     private List<AcceptCase> acceptedCases;
     private String sourceCode;

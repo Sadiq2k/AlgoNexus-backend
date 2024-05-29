@@ -18,8 +18,11 @@ import java.util.List;
 public class TestCaseRunResponse {
 
     private Submission submission;
+    private Long problemNo;
+    private String title;
     private Double averageTime;
     private Double averageMemory;
+    private String difficulty;
     private List<RejectCase> rejectedCases;
     private List<AcceptCase> acceptedCases;
     private int totalTestCases;

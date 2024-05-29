@@ -19,11 +19,14 @@ public class Submissions {
 
     @Id
     private String submissionId;
+    private Long problemNo;
+    private String title;
     private String userId;
     private String problemId;
     private String submission;
     private Double averageTime;
     private Double averageMemory;
+    private String difficulty;
     private List<RejectCase> rejectedCases;
     private List<AcceptCase> acceptedCases;
     private String sourceCode;

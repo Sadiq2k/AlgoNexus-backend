@@ -1,6 +1,7 @@
 package problemsService.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import problemsService.Model.Enum.Submission;
 import problemsService.Model.entities.Problem;
@@ -12,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProblemService {
-    
-    List<Problem> getAllProblems();
+
+    Page<Problem> getAllProblems(Integer page, Integer size);
 
     Optional<Problem> getProblemById(String problemId);
 
@@ -26,4 +27,7 @@ public interface ProblemService {
     ResponseEntity<ProblemVerificationResponse> internalServerErrorWithMessage(String message);
 
     boolean invalidTestCases(ProblemVerificationRequest request);
+
+    void checkDuplicateTitleExistsOrNot(String title);
+
 }

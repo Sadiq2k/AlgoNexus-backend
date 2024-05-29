@@ -13,6 +13,7 @@ import java.util.List;
 public class ProblemDto {
 
     private String problemId;
+    private Long problemNo;
     private String title;
     private String description;
     private String difficulty;
@@ -28,6 +29,7 @@ public class ProblemDto {
 
     public ProblemDto(Problem problem){
         this.problemId = problem.getProblemId();
+        this.problemNo = problem.getProblemNo();
         this.title = problem.getTitle();
         this.description = problem.getDescription();
         this.difficulty = problem.getDifficulty();

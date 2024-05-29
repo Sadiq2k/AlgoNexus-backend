@@ -7,6 +7,10 @@ import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
 import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
 import com.algo.nexus.userService.Serivce.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,8 +54,13 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public  Page<User> getAllUser(Integer page,Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<User> pageCourse = userRepository.findAll(pageable);
+        List<User> allTopics = pageCourse.getContent();
+        Page<User> responsePage = new PageImpl<>(allTopics, pageable, pageCourse.getTotalElements());
+        return responsePage;
     }
 
     @Override

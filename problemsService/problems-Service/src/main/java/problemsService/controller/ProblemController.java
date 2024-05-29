@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,6 @@ import problemsService.Model.response.AddProblemResponse;
 import problemsService.Model.response.ProblemVerificationResponse;
 import problemsService.service.ExampleService;
 import problemsService.service.ProblemService;
-import problemsService.service.TestCaseService;
 
 import java.util.*;
 
@@ -34,8 +35,6 @@ public class ProblemController {
     private ProblemService problemService;
     @Autowired
     private ExampleService exampleService;
-    @Autowired
-    private TestCaseService testCaseService;
 
 
 
@@ -43,16 +42,20 @@ public class ProblemController {
     public ResponseEntity<AddProblemResponse> addProblem(@RequestBody AddProblemRequest addProblemRequest, HttpServletRequest servletRequest) {
         problemService.addProblem(addProblemRequest,servletRequest);
         return ResponseEntity.ok(new AddProblemResponse("Problem added successfully", HttpStatus.OK.value()));
-
     }
 
+    @GetMapping("/title/{title}")
+    public void checkDuplicateTitleExistsOrNot(@PathVariable("title") String title){
+        problemService.checkDuplicateTitleExistsOrNot(title);
+    }
 
     @GetMapping
-    public ResponseEntity<List<Problem>> getAllProblems() {
+    public ResponseEntity<Page<Problem>> getAllProblems(@RequestParam(value = "page",defaultValue = "0",required = false)Integer page,
+                                                        @RequestParam(value = "size",defaultValue = "5",required = false)Integer size) {
         try {
-            List<Problem> problems = problemService.getAllProblems();
-            if (!problems.isEmpty()) {
-                for (Problem problem : problems) {
+            Page<Problem> problems = problemService.getAllProblems(page, size);
+            if (problems.hasContent()) {
+                problems.forEach(problem -> {
                     String solutionTemplateBase64 = problem.getSolutionTemplate();
                     String solutionTemplate = new String(Base64.getDecoder().decode(solutionTemplateBase64));
                     problem.setSolutionTemplate(solutionTemplate);
@@ -60,27 +63,28 @@ public class ProblemController {
                     String driverCodeBase64 = problem.getDriverCode();
                     String driverCode = new String(Base64.getDecoder().decode(driverCodeBase64));
                     problem.setDriverCode(driverCode);
-                }
+                });
                 return ResponseEntity.ok(problems);
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problems);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList());
-        }
+                    .body(Page.empty(PageRequest.of(page, size)));
+
     }
+}
 
 
     @GetMapping("/{problemId}")
-    @RateLimiter(name = "userRateLimiter", fallbackMethod = "ratingHotelFallBack" )
+    @RateLimiter(name = "submissionsLimiter", fallbackMethod = "problemServiceFallBack" )
     public ResponseEntity<Problem> getProblem(@PathVariable("problemId") String problemId){
         Optional<Problem> optionalProblem = problemService.getProblemById(problemId);
         return optionalProblem.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<Problem> ratingHotelFallBack(String problemId, Exception ex) {
+    public ResponseEntity<Problem> problemServiceFallBack(String problemId, Exception ex) {
         log.info("Fallback is executed because service is down", ex);
         Problem problem = new Problem();
         // Populate the problem object with default or cached data, if available

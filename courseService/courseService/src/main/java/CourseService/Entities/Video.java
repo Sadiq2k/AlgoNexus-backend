@@ -1,5 +1,6 @@
 package CourseService.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -24,6 +25,7 @@ public class Video {
     private String videoUrl;
     private String videoId;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;

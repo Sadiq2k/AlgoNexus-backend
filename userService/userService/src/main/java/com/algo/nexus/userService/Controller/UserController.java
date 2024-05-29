@@ -8,6 +8,7 @@ import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
 import com.algo.nexus.userService.Model.Response.UserResponse;
 import com.algo.nexus.userService.Serivce.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +31,9 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponse>> getAllUser(){
-        List<User> users = userService.getAllUser();
+    public ResponseEntity<List<UserResponse>> getAllUser(@RequestParam(value = "page",defaultValue = "0",required = false)Integer page,
+                                                         @RequestParam(value = "size",defaultValue = "10",required = false)Integer size) {
+        Page<User> users = userService.getAllUser(page,size);
         List<UserResponse> userResponses = users.stream()
                 .map(user -> {
                     UserResponse userResponse = new UserResponse();

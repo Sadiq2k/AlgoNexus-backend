@@ -2,7 +2,9 @@ package problemsService.Model.entities;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import problemsService.Model.Dto.Example;
 import problemsService.Model.Dto.SubmissionDTO;
 import problemsService.Model.Dto.TestCase;
@@ -20,6 +22,8 @@ public class Problem {
 
     @Id
     private String problemId;
+    @Field("problemNo") // Map to problemNo field in MongoDB
+    private Long problemNo;
     private String title;
     private String description;
     private String difficulty;
@@ -33,24 +37,6 @@ public class Problem {
     private List<Example> examples;
     private List<TestCase> testCases;
     private List<SubmissionDTO> submissionDTO;
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -127,7 +127,12 @@ public class TestCaseServiceImpl implements TestCaseService {
         response.setTotalTestCases(totalTestCases);
         response.setSourceCode(request.getSolutionCode());
         response.setSubmissionTime(LocalDateTime.now());
+        response.setDifficulty(request.getDifficulty());
+        response.setTitle(request.getTitle());
+        response.setProblemNo(request.getProblemNo());
+
         saveSubmissionProblem(response, request.getUserId(), request.getProblemId());
+
         return response;
     }
 
@@ -152,6 +157,9 @@ public class TestCaseServiceImpl implements TestCaseService {
                 .userId(userId)
                 .isSolved(response.getSubmission().equals(Submission.ACCEPTED))
                 .problemId(problemId)
+                .difficulty(response.getDifficulty())
+                .title(response.getTitle())
+                .problemNo(response.getProblemNo())
                 .build();
         submissionServiceFeignClient.addSubmissionProblem(SUBMISSION_DTO);
     }

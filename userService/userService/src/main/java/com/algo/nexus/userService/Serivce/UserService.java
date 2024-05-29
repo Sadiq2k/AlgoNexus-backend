@@ -4,6 +4,7 @@ import com.algo.nexus.userService.Model.Request.*;
 import com.algo.nexus.userService.Model.Entities.User;
 import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
 import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface UserService {
 
     ResponseEntity<String> registerUser(NewUserRequest newUserRequest);
     User getUser(UUID userId);
-    List<User> getAllUser();
+    Page<User> getAllUser(Integer page, Integer size);
 
     ResponseEntity<String> updateUser(UpdateUserResponse updateUserResponse);
 

@@ -22,7 +22,7 @@ public class AddProblemRequest {
 //    private String category;
 //    private List<Example> examples;
 //    private List<TestCase> testCases;
-private String title;
+    private String title;
     private String description;
     private String difficulty;
     private String driverCode;
