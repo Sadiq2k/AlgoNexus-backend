@@ -1,7 +1,10 @@
 package problemSubmission.Service;
 
+import org.springframework.data.domain.Page;
+import problemSubmission.Model.DTO.AllSubmissionDto;
 import problemSubmission.Model.Entities.Submissions;
 import problemSubmission.Model.Request.SubmissionRequest;
+import problemSubmission.Model.Response.AllSubmissionResponse;
 import problemSubmission.Model.Response.RecentSubmissionResponse;
 
 import java.util.List;
@@ -18,4 +21,10 @@ public interface SubmissionService {
     Map<String, Long> countUniqueAcceptedProblemsByDifficulty(String userId);
 
     RecentSubmissionResponse getRecentSubmission(String userId);
+
+    Page<AllSubmissionDto> getAllSubmissions(String userId, int page, int size);
+
+    Long getTotalSubmission();
+
+    Long getTotalAcceptence();
 }

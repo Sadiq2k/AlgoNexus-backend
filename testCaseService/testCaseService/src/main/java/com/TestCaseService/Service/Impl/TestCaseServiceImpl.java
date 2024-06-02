@@ -171,10 +171,13 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     private Judge0Request createJudge0Request(SolutionSubmitRequest solutionSubmitRequest, TestCase testCase) {
-        String combinedSourceCode = solutionSubmitRequest.getSolutionCode() + "\n" + solutionSubmitRequest.getDriverCode();
+        // Decode both solution code and driver code from Base64
+        String decodedSolutionCode = new String(Base64.getDecoder().decode(solutionSubmitRequest.getSolutionCode()));
+        String decodedDriverCode = new String(Base64.getDecoder().decode(solutionSubmitRequest.getDriverCode()));
+        String combinedSourceCode = decodedSolutionCode + "\n" + decodedDriverCode;
 
         Judge0Request request = new Judge0Request();
-        request.setSource_code(combinedSourceCode);
+        request.setSource_code(Base64.getEncoder().encodeToString(combinedSourceCode.getBytes()));
         request.setLanguage_id(solutionSubmitRequest.getLanguageId());
         request.setStdin(Base64.getEncoder().encodeToString(testCase.getTestCaseInput().getBytes()));
         return request;
@@ -217,7 +220,8 @@ public class TestCaseServiceImpl implements TestCaseService {
                                           Queue<Double> timeTaken, Queue<Double> memoryTaken) {
         if (judgeSubmitResponse.getCompile_output() != null) {
             throw new SandboxCompileError(judgeSubmitResponse.getCompile_output());
-        } else if (judgeSubmitResponse.getStderr() != null) {
+        }
+        else if (judgeSubmitResponse.getStderr() != null) {
             throw new SandboxStandardError(judgeSubmitResponse.getStderr());
         } else if (judgeSubmitResponse.getStdout() != null) {
             String output = judgeSubmitResponse.getStdout().replace("\n", "");
@@ -233,7 +237,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private JudgeTokenResponse createJudge0Submission(Judge0Request judge0Request) {
         try {
-            System.out.println(judge0Request);
+            System.out.println(judge0Request.getLanguage_id() + " " +judge0Request.getSource_code() );
             return judgeWebClient.post()
                     .uri(uriBuilder -> uriBuilder
                             .path("/submissions")
@@ -249,5 +253,4 @@ public class TestCaseServiceImpl implements TestCaseService {
             throw new SandboxError(e, e.getMessage());
         }
     }
-
 }

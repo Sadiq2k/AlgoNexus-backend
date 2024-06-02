@@ -37,4 +37,5 @@ public interface UserService {
     ResponseEntity<String> addWork(AddWorkRequest addWorkRequest);
 
 
+    Long getUserCount();
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,8 @@ public class ProblemServiceImp implements ProblemService {
     @Autowired
     private DifficultyRepository difficultyRepository;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public Page<Problem> getAllProblems(Integer page, Integer size) {
@@ -209,6 +212,11 @@ public class ProblemServiceImp implements ProblemService {
         }
     }
 
+    @Override
+    public Long getTotalProblems() {
+       return problemRepository.count();
+    }
+
 
     private JudgeSubmitResponse executeAndGetResponse(ProblemVerificationRequest problemVerificationRequest, TestCase test) {
         Judge0Request request = new Judge0Request();
@@ -301,6 +309,14 @@ public class ProblemServiceImp implements ProblemService {
     }
 
 
+    @Override
+    public Problem getRandomProblem() {
+        long count = mongoTemplate.count(new Query(), Problem.class);
+        int randomIndex = new Random().nextInt((int) count);
+        Query query = new Query().skip(randomIndex).limit(1);
+        List<Problem> problems = mongoTemplate.find(query, Problem.class);
+        return problems.isEmpty() ? null : problems.get(0);
+    }
 
 
 }

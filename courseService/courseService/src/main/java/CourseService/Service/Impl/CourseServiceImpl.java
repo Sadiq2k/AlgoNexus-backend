@@ -130,5 +130,10 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.save(existingVideo);
         }
 
+    @Override
+    public Long getTotalCourse() {
+        return courseRepository.findTotalCourse();
+    }
+
 
 }

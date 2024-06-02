@@ -8,7 +8,6 @@ import java.util.List;
 @Setter
 public class Example {
 
-//    private String id;
     private String testCaseInput;
     private String expectedOutput;
 

@@ -30,4 +30,7 @@ public interface ProblemService {
 
     void checkDuplicateTitleExistsOrNot(String title);
 
+    Long getTotalProblems();
+
+    Problem getRandomProblem();
 }

@@ -1,0 +1,16 @@
+server:
+  port: 8092
+
+
+spring:
+  config:
+    import: optional:configserver:http://localhost:8085
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: algo-nexus-dailyProblemService
+      auto-index-creation: true
+      auto-create-indexes: true
+
+  application:
+    name: DAILY-PROBLEM-SERVICE

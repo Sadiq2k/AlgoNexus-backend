@@ -22,7 +22,7 @@ public class Problem {
 
     @Id
     private String problemId;
-    @Field("problemNo") // Map to problemNo field in MongoDB
+    @Field("problemNo")
     private Long problemNo;
     private String title;
     private String description;

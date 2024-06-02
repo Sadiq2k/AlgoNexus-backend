@@ -13,7 +13,7 @@ public enum BusinessErrorCodes {
     NEW_PASSWORD_DOES_NOT_MATCH(301,BAD_REQUEST,"The new password does not match"),
     ACCOUNT_LOCKED(302,FORBIDDEN , "User account is locked"),
     ACCOUNT_DISABLED(303,FORBIDDEN , "User account is disabled"),
-    BAD_CREDENTIALS(304,FORBIDDEN , "Email / or password is incorrect"),
+    BAD_CREDENTIALS(304,FORBIDDEN , "Email / password is incorrect"),
     PASSWORD_START_WITH_UPPERCASE(304,FORBIDDEN,"Password must start with an uppercase letter")
     ;
 

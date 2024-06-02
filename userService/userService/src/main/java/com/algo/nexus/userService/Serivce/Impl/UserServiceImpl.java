@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +44,8 @@ public class UserServiceImpl implements UserService {
         user.setFirstname(newUserRequest.getFirstname());
         user.setLastname(newUserRequest.getLastname());
         user.setEmail(newUserRequest.getEmail());
+        user.setCreatedAccountDate(LocalDateTime.now());
+
         userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
     }
@@ -187,6 +190,11 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(userWork);
         }
         return ResponseEntity.ok("User not Found");
+    }
+
+    @Override
+    public Long getUserCount() {
+       return userRepository.findTotalUserCount();
     }
 
 

@@ -20,4 +20,5 @@ public interface CourseService {
     Course updateTopic(UpdateTopicRequest addCourseRequest) throws IOException;
 
 
+    Long getTotalCourse();
 }

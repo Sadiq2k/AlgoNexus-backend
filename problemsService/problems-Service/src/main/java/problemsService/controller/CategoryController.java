@@ -24,12 +24,16 @@ public class CategoryController {
         categoryService.addCategory(category);
     }
     @GetMapping("/get")
-    public CategoryDifficultyResponse getAllCategoryAndDifficulty() {
+    public CategoryDifficultyResponse getAllCategoryAndDifficulty(@RequestParam(value = "category",required = false) boolean category) {
         List<Category> allCategories = categoryService.getAllCategory();
         List<Difficulties> allDifficulties = difficultyService.getAllDifficulty();
-
         CategoryDifficultyResponse response = new CategoryDifficultyResponse();
         response.setCategories(allCategories);
+
+        if(category){
+            return response;
+        }
+
         response.setDifficulties(allDifficulties);
 
         return response;

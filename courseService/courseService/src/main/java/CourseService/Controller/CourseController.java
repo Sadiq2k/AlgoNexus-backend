@@ -69,4 +69,9 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(course);
     }
 
+    @GetMapping("/getTotalCourse")
+    public Long getTotalCourse(){
+        return courseService.getTotalCourse();
+    }
+
 }

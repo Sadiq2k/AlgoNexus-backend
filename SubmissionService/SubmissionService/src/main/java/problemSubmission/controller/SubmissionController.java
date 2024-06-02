@@ -1,11 +1,14 @@
 package problemSubmission.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import problemSubmission.Model.DTO.AllSubmissionDto;
 import problemSubmission.Model.Entities.Submissions;
 import problemSubmission.Model.Request.SubmissionRequest;
+import problemSubmission.Model.Response.AllSubmissionResponse;
 import problemSubmission.Model.Response.RecentSubmissionResponse;
 import problemSubmission.Service.SubmissionService;
 
@@ -32,11 +35,6 @@ public class SubmissionController {
         return submitSolution;
     }
 
-//    @GetMapping("/solved")
-//    public long countSolvedProblems(@RequestParam String userId){
-//       return submissionService.countUniqueSolvedProblems(userId);
-//    }
-
     @GetMapping("/solved-problems-by-difficulty/{userId}")
     public ResponseEntity<Map<String, Long>> getSolvedProblemsByDifficulty(@PathVariable("userId") String userId) {
         Map<String, Long> solvedProblemsByDifficulty = submissionService.countUniqueAcceptedProblemsByDifficulty(userId);
@@ -48,4 +46,21 @@ public class SubmissionController {
            return submissionService.getRecentSubmission(userId);
     }
 
+    @GetMapping("/get/all/submissions")
+    public Page<AllSubmissionDto> getAllSubmissions(@RequestParam("userId") String userId,
+                                                    @RequestParam(value = "page",defaultValue = "0",required = false) int page,
+                                                    @RequestParam(value = "size",defaultValue = "20" , required = false) int size) {
+        return submissionService.getAllSubmissions(userId, page, size);
+    }
+
+    @GetMapping("/getTotalSubmission")
+    public Long getTotalSubmission(){
+        return submissionService.getTotalSubmission();
+    }
+
+    @GetMapping("/getTotalAcceptence")
+    public Long getTotalAcceptence(){
+       return submissionService.getTotalAcceptence();
+
+    }
 }

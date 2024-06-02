@@ -32,5 +32,6 @@ public class Submissions {
     private String sourceCode;
     private LocalDateTime submissionTime;
     private boolean isSolved;
+    private boolean isTodayProblem;
 
 }

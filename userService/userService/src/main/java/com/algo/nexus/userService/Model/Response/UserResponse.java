@@ -18,5 +18,7 @@ public class UserResponse {
     private String email;
     private boolean block;
     private String role;
+    private Integer totalPages;
+    private Integer totalElements;
 
 }

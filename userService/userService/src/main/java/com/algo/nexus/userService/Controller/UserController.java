@@ -3,6 +3,7 @@ package com.algo.nexus.userService.Controller;
 import com.algo.nexus.userService.Model.Request.*;
 import com.algo.nexus.userService.Model.Entities.User;
 import com.algo.nexus.userService.FiegnClient.AuthenticationFeignClient;
+import com.algo.nexus.userService.Model.Response.PagedResponse;
 import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
 import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
 import com.algo.nexus.userService.Model.Response.UserResponse;
@@ -31,14 +32,14 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponse>> getAllUser(@RequestParam(value = "page",defaultValue = "0",required = false)Integer page,
-                                                         @RequestParam(value = "size",defaultValue = "10",required = false)Integer size) {
-        Page<User> users = userService.getAllUser(page,size);
+    public ResponseEntity<PagedResponse<UserResponse>> getAllUser(@RequestParam(value = "page",defaultValue = "0",required = false)Integer page,
+                                                                  @RequestParam(value = "size",defaultValue = "10",required = false)Integer size) {
+        Page<User> users = userService.getAllUser(page, size);
+
         List<UserResponse> userResponses = users.stream()
                 .map(user -> {
                     UserResponse userResponse = new UserResponse();
                     userResponse.setId(user.getId());
-
                     userResponse.setFirstname(user.getFirstname());
                     userResponse.setLastname(user.getLastname());
                     userResponse.setEmail(user.getEmail());
@@ -47,11 +48,19 @@ public class UserController {
                     roles = roles.replaceAll("[\\[\\]]", "").replaceAll(", ", ",");
                     userResponse.setRole(roles);
                     userResponse.setBlock(userBlocked);
-
                     return userResponse;
                 })
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(userResponses);
+
+        PagedResponse<UserResponse> response = new PagedResponse<>();
+        response.setContent(userResponses);
+        response.setPage(users.getNumber());
+        response.setSize(users.getSize());
+        response.setTotalElements(users.getTotalElements());
+        response.setTotalPages(users.getTotalPages());
+        response.setLast(users.isLast());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/update")
@@ -113,7 +122,10 @@ public class UserController {
         return response;
     }
 
-
+    @GetMapping("/getAllUsersCount")
+    public Long getUserCount(){
+      return  userService.getUserCount();
+    }
 
 
 

@@ -128,6 +128,15 @@ public class ProblemController {
             return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/getTotalProblem")
+    public Long getTotalQuestions(){
+        return problemService.getTotalProblems();
+    }
 
+
+    @GetMapping("/random")
+    public Problem getRandomProblem() {
+        return problemService.getRandomProblem();
+    }
 
 }
