@@ -58,6 +58,7 @@ public class CloudinaryImageController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileImage> getImageByUserId(@PathVariable UUID userId) {
+
         User user = userRepository.findById(userId);
         if (user != null) {
             UserProfileImage userProfileImage = userProfileImageService.findByUser(user);

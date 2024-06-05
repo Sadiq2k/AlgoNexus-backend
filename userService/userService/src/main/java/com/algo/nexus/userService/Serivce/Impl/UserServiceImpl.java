@@ -1,7 +1,9 @@
 package com.algo.nexus.userService.Serivce.Impl;
 
+import com.algo.nexus.userService.Model.Entities.UserProfileImage;
 import com.algo.nexus.userService.Model.Request.*;
 import com.algo.nexus.userService.Model.Entities.User;
+import com.algo.nexus.userService.Model.Response.SocialMediaAllUserResponse;
 import com.algo.nexus.userService.Repository.UserRepository;
 import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
 import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -195,6 +198,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long getUserCount() {
        return userRepository.findTotalUserCount();
+    }
+
+
+    @Override
+    public Page<User> getAllUserForMyNetworkPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<User> pageCourse = userRepository.findAll(pageable);
+        List<User> allTopics = pageCourse.getContent();
+        Page<User> responsePage = new PageImpl<>(allTopics, pageable, pageCourse.getTotalElements());
+        return responsePage;
+
     }
 
 

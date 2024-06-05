@@ -39,18 +39,18 @@
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>Account Activation</h1>
-    <p class="greeting" th:text="'Hello ' + ${username} + '!'"></p>
-    <p>Thank you for signing up! Please use the following activation code to activate your account:</p>
-    <div class="activation-code" th:text="${activation_code}"></div>
-    <div class="activation-link">
-        <a th:href="${confirmationUrl}" target="_blank">Activate your account</a>
-    </div>
-<!--    <div class="activation-link">-->
-<!--        <a th:href="@{${confirmationUrl} + '?token=' + ${activation_code}}" target="_blank">Activate your account</a>-->
-<!--    </div>-->
-</div>
-</body>
+    <body>
+        <div class="container">
+            <h1>Account Activation</h1>
+            <p class="greeting" th:text="'Hello ' + ${username} + '!'"></p>
+            <p>Thank you for signing up! Please use the following activation code to activate your account:</p>
+            <div class="activation-code" th:text="${activation_code}"></div>
+<!--            <div class="activation-link">-->
+<!--                <a th:href="${confirmationUrl}" target="_blank">Activate your account</a>-->
+<!--            </div>-->
+            <div class="activation-link">
+                <a th:href="@{${confirmationUrl} + '?token=' + ${activation_code}}" target="_blank">Activate your account</a>
+            </div>
+        </div>
+    </body>
 </html>

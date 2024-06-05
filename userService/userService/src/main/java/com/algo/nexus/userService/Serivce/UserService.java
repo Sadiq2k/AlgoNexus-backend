@@ -2,6 +2,7 @@ package com.algo.nexus.userService.Serivce;
 
 import com.algo.nexus.userService.Model.Request.*;
 import com.algo.nexus.userService.Model.Entities.User;
+import com.algo.nexus.userService.Model.Response.SocialMediaAllUserResponse;
 import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
 import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
 import org.springframework.data.domain.Page;
@@ -38,4 +39,6 @@ public interface UserService {
 
 
     Long getUserCount();
+
+    Page<User> getAllUserForMyNetworkPage(Integer page, Integer size);
 }

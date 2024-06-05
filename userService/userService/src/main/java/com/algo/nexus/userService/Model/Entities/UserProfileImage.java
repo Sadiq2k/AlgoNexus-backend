@@ -1,6 +1,7 @@
 package com.algo.nexus.userService.Model.Entities;
 
 import com.algo.nexus.userService.Model.Entities.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,10 +25,10 @@ public class UserProfileImage {
     private String imageUrl;
     private String imageId;
 
-
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name = "user_id", nullable = false)
-private User user;
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 
 }

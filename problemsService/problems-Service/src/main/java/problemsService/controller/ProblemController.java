@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import problemsService.Model.Dto.ProblemTitleDto;
 import problemsService.Model.Enum.Submission;
 import problemsService.Model.Judge0.TestCaseTimeOutException;
 import problemsService.Model.Judge0.error.SandboxCodeExecutionError;
@@ -20,6 +21,7 @@ import problemsService.Model.entities.Problem;
 import problemsService.Model.request.AddProblemRequest;
 import problemsService.Model.request.ProblemVerificationRequest;
 import problemsService.Model.response.AddProblemResponse;
+import problemsService.Model.response.DailyProblemResponse;
 import problemsService.Model.response.ProblemVerificationResponse;
 import problemsService.service.ExampleService;
 import problemsService.service.ProblemService;
@@ -135,8 +137,17 @@ public class ProblemController {
 
 
     @GetMapping("/random")
-    public Problem getRandomProblem() {
-        return problemService.getRandomProblem();
+    public DailyProblemResponse getRandomProblem() {
+        final Problem randomProblem = problemService.getRandomProblem();
+        DailyProblemResponse dailyProblemResponse = new DailyProblemResponse();
+        dailyProblemResponse.setProblemId(randomProblem.getProblemId());
+        return dailyProblemResponse;
+
+    }
+
+    @GetMapping("/getProblem/name")
+    public ProblemTitleDto getTitle(@RequestParam("problemId") String problemId){
+      return problemService.getTitle(problemId);
     }
 
 }

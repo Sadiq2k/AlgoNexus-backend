@@ -21,5 +21,6 @@ public class Streak {
     private String userId;
     private Long streak;
     private LocalDate date;
-    private LocalDate lastUpdateStreak;
+    private LocalDateTime lastUpdateStreak;
+    private Long dailyStreak;
 }

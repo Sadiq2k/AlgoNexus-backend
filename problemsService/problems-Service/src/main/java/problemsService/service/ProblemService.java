@@ -3,6 +3,7 @@ package problemsService.service;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import problemsService.Model.Dto.ProblemTitleDto;
 import problemsService.Model.Enum.Submission;
 import problemsService.Model.entities.Problem;
 import problemsService.Model.request.AddProblemRequest;
@@ -33,4 +34,6 @@ public interface ProblemService {
     Long getTotalProblems();
 
     Problem getRandomProblem();
+
+    ProblemTitleDto getTitle(String problemId);
 }

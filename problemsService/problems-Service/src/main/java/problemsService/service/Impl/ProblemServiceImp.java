@@ -15,10 +15,7 @@ import problemsService.Exception.DuplicateValueException;
 import problemsService.Exception.InternalServerException;
 import problemsService.FiengClient.SubmissionFeignClient;
 import problemsService.FiengClient.TestCaseFeignClient;
-import problemsService.Model.Dto.AcceptCase;
-import problemsService.Model.Dto.RejectCase;
-import problemsService.Model.Dto.SubmissionDTO;
-import problemsService.Model.Dto.TestCase;
+import problemsService.Model.Dto.*;
 import problemsService.Model.Enum.Submission;
 import problemsService.Model.Judge0.error.SandboxCodeExecutionError;
 import problemsService.Model.Judge0.error.SandboxCompileError;
@@ -76,7 +73,6 @@ public class ProblemServiceImp implements ProblemService {
     public Optional<Problem> getProblemById(String problemId) {
 
         Optional<Problem> problemOptional = problemRepository.findById(problemId);
-
         if (problemOptional.isPresent()) {
             Problem problem = problemOptional.get();
             try {
@@ -316,6 +312,19 @@ public class ProblemServiceImp implements ProblemService {
         Query query = new Query().skip(randomIndex).limit(1);
         List<Problem> problems = mongoTemplate.find(query, Problem.class);
         return problems.isEmpty() ? null : problems.get(0);
+    }
+
+    @Override
+    public ProblemTitleDto getTitle(String problemId) {
+        final Optional<Problem> titleByProblemId = problemRepository.findTitleByProblemId(problemId);
+
+        if (!titleByProblemId.isPresent()) {
+            throw new IllegalArgumentException("No title found for problem ID: " + problemId);
+        }
+        ProblemTitleDto problemTitleDto = new ProblemTitleDto();
+        problemTitleDto.setTitle(titleByProblemId.get().getTitle());
+        problemTitleDto.setDifficulty(titleByProblemId.get().getDifficulty());
+        return problemTitleDto;
     }
 
 

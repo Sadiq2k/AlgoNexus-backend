@@ -11,7 +11,6 @@ public class DailyProblemScheduler {
     @Autowired
     private DailyProblemService dailyProblemService;
 
-    // Schedule this method to run at midnight every day
     @Scheduled(cron = "0 0 0 * * ?")
     public void scheduleDailyProblemAssignment() {
         dailyProblemService.assignDailyProblem();

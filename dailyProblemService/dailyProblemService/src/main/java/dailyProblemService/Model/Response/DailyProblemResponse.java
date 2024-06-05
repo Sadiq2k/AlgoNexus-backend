@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DailyProblemResponse {
+
     private LocalDate date;
     private String problemId;
+
 }

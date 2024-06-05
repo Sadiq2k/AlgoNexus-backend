@@ -1,12 +1,11 @@
 package com.algo.nexus.userService.Controller;
 
+import com.algo.nexus.userService.Model.Entities.UserProfileImage;
 import com.algo.nexus.userService.Model.Request.*;
 import com.algo.nexus.userService.Model.Entities.User;
 import com.algo.nexus.userService.FiegnClient.AuthenticationFeignClient;
-import com.algo.nexus.userService.Model.Response.PagedResponse;
-import com.algo.nexus.userService.Model.Response.UpdateFullNameResponse;
-import com.algo.nexus.userService.Model.Response.UpdateUserResponse;
-import com.algo.nexus.userService.Model.Response.UserResponse;
+import com.algo.nexus.userService.Model.Response.*;
+import com.algo.nexus.userService.Serivce.UserProfileImageService;
 import com.algo.nexus.userService.Serivce.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/users")
@@ -25,6 +25,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AuthenticationFeignClient authenticationFeignClient;
+    @Autowired
+    private UserProfileImageService userProfileImageService;
     @PostMapping("/register")
     public ResponseEntity<String> registerNewUser(@RequestBody NewUserRequest newUserRequest) {
         final ResponseEntity<String> stringResponseEntity = userService.registerUser(newUserRequest);
@@ -128,7 +130,30 @@ public class UserController {
     }
 
 
+    @GetMapping("/all/social-media")
+    public PaginatedSocialUserResponse getAllUserForMyNetworkPage(@RequestParam(value = "page",defaultValue = "0",required = false)Integer page,
+                                                                       @RequestParam(value = "size",defaultValue = "10",required = false)Integer size){
+        Page<User> allUserForMyNetworkPage = userService.getAllUserForMyNetworkPage(page, size);
+        List<SocialMediaAllUserResponse> userResponses = allUserForMyNetworkPage.stream()
+                .map(user -> {
+                    UserProfileImage profileImage = userProfileImageService.findByUser(user);
+                    return new SocialMediaAllUserResponse(
+                            user.getId(),
+                            user.getFirstname(),
+                            user.getLastname(),
+                            user.getEducation(),
+                            user.getWork(),
+                            profileImage
+                    );
+                })
+                .collect(Collectors.toList());
 
+        return new PaginatedSocialUserResponse(
+                userResponses,
+                allUserForMyNetworkPage.getTotalPages(),
+                allUserForMyNetworkPage.getTotalElements()
+        );
+    }
 
 
 }

@@ -25,7 +25,6 @@ public class UserProfileImageServiceImpl implements UserProfileImageService {
     public UserProfileImage findByUser(User user) {
         final UserProfileImage byUser = userProfileImageRepository.findByUser(user);
 
-
         return byUser;
     }
 

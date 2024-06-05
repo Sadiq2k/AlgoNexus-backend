@@ -20,4 +20,9 @@ public class StreakController {
     public Long getStreak(@RequestParam("userId") String userId){
        return streakService.getStreak(userId);
     }
+
+    @GetMapping("/daily-streak")
+    public Long getDailyStreak(@RequestParam("userId") String userId){
+        return streakService.getDailyStreak(userId);
+    }
 }

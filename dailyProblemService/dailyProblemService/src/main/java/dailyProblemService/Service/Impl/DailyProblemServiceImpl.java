@@ -8,9 +8,11 @@ import dailyProblemService.Repository.DailyProblemRepository;
 import dailyProblemService.Service.DailyProblemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -72,6 +74,16 @@ public class DailyProblemServiceImpl implements DailyProblemService {
     @Override
     public boolean isTodayProblem(String problemId, LocalDate date) {
         return dailyProblemRepository.existsByProblemProblemIdAndDate(problemId, date);
+    }
+
+
+    @Override
+    public Page<DailyProblem> getAllDailyProblems(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Direction.DESC, "date"));
+        Page<DailyProblem> dailyAllProblems = dailyProblemRepository.findAll(pageable);
+        List<DailyProblem> allTopics = dailyAllProblems.getContent();
+        Page<DailyProblem> responsePage = new PageImpl<>(allTopics, pageable, dailyAllProblems.getTotalElements());
+        return responsePage;
     }
 
     private boolean problemAlreadyAssigned(String problemId) {
