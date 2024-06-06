@@ -53,6 +53,9 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>
+			service-registry-algonexus
+		</finalName>
 	</build>
 
 </project>
