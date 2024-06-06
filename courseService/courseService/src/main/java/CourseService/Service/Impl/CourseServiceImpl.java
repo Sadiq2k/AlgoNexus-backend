@@ -11,20 +11,15 @@ import CourseService.Reposistory.CourseRepository;
 import CourseService.Reposistory.VideoRepository;
 import CourseService.Service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -134,6 +129,31 @@ public class CourseServiceImpl implements CourseService {
     public Long getTotalCourse() {
         return courseRepository.findTotalCourse();
     }
+
+    @Override
+    public List<AddCourseResponse> getLatestCourseTopic() {
+
+        List<Course> allCourses = courseRepository.findAll();
+
+        // Sort the courses by courseId in descending order
+        List<Course> sortedCourses = allCourses.stream()
+                .sorted(Comparator.comparingLong(Course::getCourseId).reversed())
+                .collect(Collectors.toList());
+
+        // Select the top two courses
+        List<Course> latestCourses = sortedCourses.stream().limit(2).collect(Collectors.toList());
+
+        // Convert Course objects to AddCourseResponse objects
+        List<AddCourseResponse> responseList = new ArrayList<>();
+        for (Course course : latestCourses) {
+            List<VideoResponse> videos = getVideos(course.getCourseId());
+            AddCourseResponse response = getAddCourseResponse(course, videos);
+            responseList.add(response);
+        }
+        return responseList;
+    }
+
+
 
 
 }

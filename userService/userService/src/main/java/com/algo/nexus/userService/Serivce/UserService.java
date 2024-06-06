@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,8 +38,15 @@ public interface UserService {
 
     ResponseEntity<String> addWork(AddWorkRequest addWorkRequest);
 
+    ResponseEntity<String> addEducation(AddEducationRequest addEducationRequest);
+
 
     Long getUserCount();
 
     Page<User> getAllUserForMyNetworkPage(Integer page, Integer size);
+
+    Map<String, Long> getUserRegistrationsPerMonth();
+
+
+
 }

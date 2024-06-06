@@ -1,12 +1,4 @@
-# Build Stage
-FROM eclipse-temurin:17-jdk-alpine as build
-WORKDIR /app
-COPY . .
-RUN ./mvnw clean package
-
-# Package Stage
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+FROM openjdk:17
 EXPOSE 8087
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ADD target/auth-service-algonexus.jar auth-service-algonexus.jar.jar
+ENTRYPOINT ["java","-jar","/auth-service-algonexus.jar.jar"]

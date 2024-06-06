@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -196,6 +195,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity<String> addEducation(AddEducationRequest addEducationRequest) {
+        User user = userRepository.findById(addEducationRequest.getId());
+        if (user != null) {
+            user.setEducation(addEducationRequest.getEducation());
+            userRepository.save(user);
+            String userWork = user.getEducation();
+
+            return ResponseEntity.ok(userWork);
+        }
+        return ResponseEntity.ok("User not Found");
+    }
+
+    @Override
     public Long getUserCount() {
        return userRepository.findTotalUserCount();
     }
@@ -210,6 +222,26 @@ public class UserServiceImpl implements UserService {
         Page<User> responsePage = new PageImpl<>(allTopics, pageable, pageCourse.getTotalElements());
         return responsePage;
 
+    }
+
+    @Override
+    public Map<String, Long> getUserRegistrationsPerMonth() {
+        List<Object[]> results = userRepository.findUserRegistrationsPerMonth();
+        Map<String, Long> registrationsPerMonth = new HashMap<>();
+
+        for (Object[] result : results) {
+            Integer month = (Integer) result[0];
+            Long count = (Long) result[1];
+
+            String monthName = getMonthName(month);
+            registrationsPerMonth.put(monthName, count);
+        }
+
+        return registrationsPerMonth;
+    }
+    private String getMonthName(Integer month) {
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        return months[month - 1];
     }
 
 

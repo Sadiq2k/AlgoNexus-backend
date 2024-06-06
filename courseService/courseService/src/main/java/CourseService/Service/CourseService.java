@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.util.List;
 
+
 public interface CourseService {
     void addCourse(AddCourseRequest addCourseRequest);
 
@@ -21,4 +22,6 @@ public interface CourseService {
 
 
     Long getTotalCourse();
+
+    List<AddCourseResponse> getLatestCourseTopic();
 }

@@ -13,9 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/users")
@@ -123,6 +123,11 @@ public class UserController {
         ResponseEntity<String> response = userService.addWork(addWorkRequest);
         return response;
     }
+    @PostMapping("/add/education")
+    public ResponseEntity<String> setEducation(@RequestBody AddEducationRequest addEducationRequest){
+        ResponseEntity<String> response = userService.addEducation(addEducationRequest);
+        return response;
+    }
 
     @GetMapping("/getAllUsersCount")
     public Long getUserCount(){
@@ -153,6 +158,11 @@ public class UserController {
                 allUserForMyNetworkPage.getTotalPages(),
                 allUserForMyNetworkPage.getTotalElements()
         );
+    }
+
+    @GetMapping("/registrations-per-month")
+    public Map<String, Long> getUserRegistrationsPerMonth() {
+        return userService.getUserRegistrationsPerMonth();
     }
 
 

@@ -113,6 +113,9 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>
+			daily-problem-algonexus
+		</finalName>
 	</build>
 
 </project>

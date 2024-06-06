@@ -49,6 +49,11 @@ public class CourseController {
         return courseService.getAllCourserTopic(page,size);
     }
 
+    @GetMapping("/latest")
+    public List<AddCourseResponse> getLatestCourseTopic(){
+      return  courseService.getLatestCourseTopic();
+    }
+
     @DeleteMapping("delete/{courseId}")
     public void deleteTopic(@PathVariable Long courseId) throws IOException {
         courseService.deleteCourseTopic(courseId);
