@@ -110,6 +110,9 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>
+			submission-service-algonexus
+		</finalName>
 	</build>
 
 </project>

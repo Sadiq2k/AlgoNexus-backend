@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="MavenProjectsManager">
-    <option name="originalFiles">
-      <list>
-        <option value="$PROJECT_DIR$/apiGateway/apiGateway/pom.xml" />
-        <option value="$PROJECT_DIR$/AuthService/AuthService/pom.xml" />
-        <option value="$PROJECT_DIR$/userService/userService/pom.xml" />
-        <option value="$PROJECT_DIR$/ConfigServer/ConfigServer/pom.xml" />
-        <option value="$PROJECT_DIR$/courseService/courseService/pom.xml" />
-        <option value="$PROJECT_DIR$/problemsService/problems-Service/pom.xml" />
-        <option value="$PROJECT_DIR$/serviceRegistry/serviceRegistry/pom.xml" />
-        <option value="$PROJECT_DIR$/testCaseService/testCaseService/pom.xml" />
-        <option value="$PROJECT_DIR$/SubmissionService/SubmissionService/pom.xml" />
-        <option value="$PROJECT_DIR$/socialMediaService/socialMediaService/pom.xml" />
-        <option value="$PROJECT_DIR$/dailyProblemService/dailyProblemService/pom.xml" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true" project-jdk-name="openjdk-20" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" default="true">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectType">

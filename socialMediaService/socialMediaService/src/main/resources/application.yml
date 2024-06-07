@@ -1,5 +1,5 @@
 server:
-  port: 8091
+  port: 8082
 
 
 spring:
@@ -13,5 +13,5 @@ spring:
       auto-create-indexes: true
 
   application:
-    name: SOCIAL-MEDIA
+    name: SOCIAL-MEDIA-SERVICE
 

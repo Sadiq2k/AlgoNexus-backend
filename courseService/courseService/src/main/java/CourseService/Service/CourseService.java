@@ -24,4 +24,5 @@ public interface CourseService {
     Long getTotalCourse();
 
     List<AddCourseResponse> getLatestCourseTopic();
+
 }

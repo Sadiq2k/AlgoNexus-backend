@@ -121,6 +121,9 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>
+			testCase-service-algonexus
+		</finalName>
 	</build>
 
 </project>

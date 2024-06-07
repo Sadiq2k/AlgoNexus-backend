@@ -125,6 +125,9 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>
+			user-service-algonexus
+		</finalName>
 	</build>
 
 </project>
