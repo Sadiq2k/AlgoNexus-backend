@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="auth-service" />
+        <module name="SubmissionService" />
+        <module name="testCaseService" />
+        <module name="serviceRegistry" />
+        <module name="problems-Service" />
+        <module name="courseService" />
+        <module name="apiGateway" />
+        <module name="ConfigServer" />
+        <module name="dailyProblemService" />
+        <module name="socialMediaService" />
+        <module name="userService" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ConfigServer" options="-parameters" />
+      <module name="SubmissionService" options="-parameters" />
+      <module name="apiGateway" options="-parameters" />
+      <module name="auth-service" options="-parameters" />
+      <module name="courseService" options="-parameters" />
+      <module name="dailyProblemService" options="-parameters" />
+      <module name="problems-Service" options="-parameters" />
+      <module name="serviceRegistry" options="-parameters" />
+      <module name="socialMediaService" options="-parameters" />
+      <module name="testCaseService" options="-parameters" />
+      <module name="userService" options="-parameters" />
+    </option>
+  </component>
+</project>
